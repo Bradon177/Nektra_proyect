@@ -155,7 +155,7 @@ export default function Register() {
 
         <button
           type="button"
-          onClick={() => router.push("/Dashboard/login")}
+          onClick={() => router.push("/dashboard/login")}
           className="w-full h-11 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
         >
           Volver al login
