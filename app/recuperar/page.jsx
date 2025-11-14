@@ -1,7 +1,17 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+
+
 
 export default function Page() {
+
+    const router = useRouter();
+
+    const handleClick = () =>{
+
+      router.push("./dashboard/login")
+    }
   const [email, setEmail] = useState("");
 
   return (
@@ -38,7 +48,7 @@ export default function Page() {
 
         {/* Volver */}
         <p className="text-center text-gray-600 text-sm pt-4 border-t">
-          <a href="./dashboard/login" className="text-blue-600 hover:text-blue-700 font-medium ml-1">
+          <a onClick={handleClick} className="text-blue-600 hover:text-blue-700 font-medium ml-1">
             Volver al inicio de sesión
           </a>
         </p>
