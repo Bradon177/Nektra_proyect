@@ -2,7 +2,6 @@
 import { useState } from "react";
 
 export default function Register() {
-
   const [form, setForm] = useState({
     email: "",
     cedula: "",
@@ -10,7 +9,7 @@ export default function Register() {
     telefono: "",
     genero: "",
     password: "",
-    repetir: ""
+    repetir: "",
   });
 
   const [msg, setMsg] = useState("");
@@ -22,39 +21,35 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validación básica
-    for (let key in form) {
-      if (!form[key]) {
-        setMsg("⚠️ Por favor completa todos los campos");
-        return;
-      }
-    }
-
     if (form.password !== form.repetir) {
       setMsg("⚠️ Las contraseñas no coinciden");
       return;
     }
 
-    const res = await fetch("/api/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
 
-    const data = await res.json();
-    setMsg(data.message || "Usuario registrado correctamente ✔️");
+      const data = await res.json();
+      setMsg(data.message);
+    } catch (error) {
+      console.error(error);
+      setMsg("Error al conectar con el servidor");
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
-
       <form onSubmit={handleSubmit} className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 space-y-6">
-
+        
+        {/* HEADER */}
         <div className="text-center space-y-2">
           <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl mx-auto flex items-center justify-center">
             <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                d="M5 13l4 4L19 7" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
             </svg>
           </div>
 
@@ -62,12 +57,11 @@ export default function Register() {
           <p className="text-gray-600">Regístrate para continuar</p>
         </div>
 
-        {/* Email */}
+        {/* EMAIL */}
         <div className="space-y-2">
           <label className="text-gray-700 font-medium">Correo electrónico</label>
           <input
             name="email"
-            required
             type="email"
             placeholder="correo@ejemplo.com"
             onChange={handleChange}
@@ -75,12 +69,11 @@ export default function Register() {
           />
         </div>
 
-        {/* Cedula */}
+        {/* CEDULA */}
         <div className="space-y-2">
           <label className="text-gray-700 font-medium">Cédula</label>
           <input
             name="cedula"
-            required
             type="text"
             placeholder="Tu número de cédula"
             onChange={handleChange}
@@ -88,24 +81,22 @@ export default function Register() {
           />
         </div>
 
-        {/* Fecha */}
+        {/* FECHA */}
         <div className="space-y-2">
           <label className="text-gray-700 font-medium">Fecha de nacimiento</label>
           <input
             name="fecha"
-            required
             type="date"
             onChange={handleChange}
             className="w-full h-11 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:outline-none"
           />
         </div>
 
-        {/* Telefono */}
+        {/* TELEFONO */}
         <div className="space-y-2">
           <label className="text-gray-700 font-medium">Teléfono</label>
           <input
             name="telefono"
-            required
             type="text"
             placeholder="Tu número de teléfono"
             onChange={handleChange}
@@ -113,12 +104,11 @@ export default function Register() {
           />
         </div>
 
-        {/* Genero */}
+        {/* GENERO */}
         <div className="space-y-2">
           <label className="text-gray-700 font-medium">Género</label>
           <select
             name="genero"
-            required
             onChange={handleChange}
             className="w-full h-11 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:outline-none"
           >
@@ -129,12 +119,11 @@ export default function Register() {
           </select>
         </div>
 
-        {/* Contraseña */}
+        {/* PASSWORD */}
         <div className="space-y-2">
           <label className="text-gray-700 font-medium">Contraseña</label>
           <input
             name="password"
-            required
             type="password"
             placeholder="Mínimo 6 caracteres"
             onChange={handleChange}
@@ -142,12 +131,11 @@ export default function Register() {
           />
         </div>
 
-        {/* Repetir contraseña */}
+        {/* REPETIR */}
         <div className="space-y-2">
           <label className="text-gray-700 font-medium">Repetir contraseña</label>
           <input
             name="repetir"
-            required
             type="password"
             placeholder="Repite tu contraseña"
             onChange={handleChange}
@@ -155,18 +143,21 @@ export default function Register() {
           />
         </div>
 
+        {/* BOTÓN REGISTRO */}
         <button className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-md transition">
           Registrarse
         </button>
 
+        {/* VOLVER LOGIN */}
         <button
           type="button"
-          onClick={() => window.location.href = "/Dashboard/login"}
+          onClick={() => (window.location.href = "/login")}
           className="w-full h-11 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
         >
           Volver al login
         </button>
 
+        {/* MENSAJE */}
         {msg && <p className="text-center text-red-600">{msg}</p>}
       </form>
     </div>
