@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const app = () => {
+export default function Page() {
 
 
   
