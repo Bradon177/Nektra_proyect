@@ -1,3 +1,4 @@
+"use client"
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -6,7 +7,7 @@ export default function Home() {
 
   const routrer = useRouter()
 
-  routrer.push("/")
+  routrer.push("/dashboard/login")
 
 
 
