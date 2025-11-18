@@ -6,6 +6,8 @@ export default function Register() {
 
   const router = useRouter();
 
+  const [show, setShow] = useState(false)
+
   const [form, setForm] = useState({
     email: "",
     cedula: "",
@@ -26,7 +28,7 @@ export default function Register() {
     e.preventDefault();
 
     if (form.password !== form.repetir) {
-      setMsg("⚠️ Las contraseñas no coinciden");
+      setMsg("Las contraseñas no coinciden");
       return;
     }
 
@@ -43,12 +45,12 @@ export default function Register() {
       if (data.status === "ok") {
         // Redirigir al login si el registro es exitoso
         setTimeout(() => {
-          router.push("/Dashboard/login");
+          router.push("/dashboard/login");
         }, 1500);
       }
 
     } catch (error) {
-      setMsg("⚠️ Error enviando datos al servidor");
+      setMsg("Error enviando datos al servidor");
     }
   };
 
@@ -58,7 +60,7 @@ export default function Register() {
       <form onSubmit={handleSubmit} className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 space-y-6">
 
         <div className="text-center space-y-2">
-         
+
 
           <h2 className="text-2xl font-semibold text-gray-900">Crear cuenta</h2>
           <p className="text-gray-600">Regístrate para continuar</p>
@@ -121,7 +123,9 @@ export default function Register() {
           <select
             name="genero"
             onChange={handleChange}
-            className="w-full h-11 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:outline-none"
+            className="w-full h-11 px-3 rounded-lg border border-gray-300 
+            focus:ring-2 focus:ring-blue-600 focus:outline-none 
+            placeholder-gray-400 text-black"
           >
             <option value="">Seleccione una opción</option>
             <option value="m">Masculino</option>
@@ -132,28 +136,73 @@ export default function Register() {
 
         <div className="space-y-2">
           <label className="text-gray-700 font-medium">Contraseña</label>
-          <input
-            name="password"
-            type="password"
-            placeholder="Mínimo 6 caracteres"
+
+          <div className="relative">
+            <input
+              name="password"
+              type={show ? "text" : "password"}
+              placeholder="Mínimo 6 caracteres"
+              onChange={handleChange}
+              className="w-full h-11 px-3 rounded-lg border border-gray-300 
+      focus:ring-2 focus:ring-blue-600 focus:outline-none 
+      placeholder-gray-400 text-black"
+            />
+
+            <button
+              type="button"
+              onClick={() => setShow(!show)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800"
+            >
+              {show ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path d="M17.94 17.94A10.07 10.07 0 0112 20c-5.52 0-10-4-10-8 0-1.61.53-3.11 1.44-4.34M6.06 6.06A10.07 10.07 0 0112 4c5.52 0 10 4 10 8 0 1.61-.53 3.11-1.44 4.34M3 3l18 18" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              )}
+            </button>
+          </div>
+        </div>
+
+
+        <div className="space-y-2">
+          <label className="text-gray-700 font-medium">Repetir contraseña</label>
+
+          <div className="relative">
+            <input
+            name="repetir"
+            type={show ? "text" : "password"}
+            placeholder="Repite tu contraseña"
             onChange={handleChange}
             className="w-full h-11 px-3 rounded-lg border border-gray-300 
             focus:ring-2 focus:ring-blue-600 focus:outline-none 
             placeholder-gray-400 text-black"
           />
-        </div>
 
-        <div className="space-y-2">
-          <label className="text-gray-700 font-medium">Repetir contraseña</label>
-          <input
-            name="repetir"
-            type="password"
-            placeholder="Repite tu contraseña"
-            onChange={handleChange}
-             className="w-full h-11 px-3 rounded-lg border border-gray-300 
-            focus:ring-2 focus:ring-blue-600 focus:outline-none 
-            placeholder-gray-400 text-black"
-          />
+          <button type="button"
+          onClick={()=>setShow(!show)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800"
+          >
+              {show ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path d="M17.94 17.94A10.07 10.07 0 0112 20c-5.52 0-10-4-10-8 0-1.61.53-3.11 1.44-4.34M6.06 6.06A10.07 10.07 0 0112 4c5.52 0 10 4 10 8 0 1.61-.53 3.11-1.44 4.34M3 3l18 18" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              )}
+          </button>
+
+
+
+
+          </div>
+          
         </div>
 
         <button className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-md transition">
