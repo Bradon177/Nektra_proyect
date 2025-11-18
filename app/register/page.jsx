@@ -205,7 +205,9 @@ export default function Register() {
           
         </div>
 
-        <button className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-md transition">
+        <button
+        type="submit"
+         className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-md transition">
           Registrarse
         </button>
 
