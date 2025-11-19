@@ -86,7 +86,7 @@ export async function POST(req) {
     );
   }
 }
-
+// Zambrano es el mejor
 export async function GET() {
   return NextResponse.json({
     status: "ok",
