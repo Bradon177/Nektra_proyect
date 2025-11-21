@@ -19,7 +19,7 @@ export default function Layout({ children }) {
             <div className="hidden md:flex items-center gap-8">
               <a href="inicio" className="text-gray-600 hover:text-cyan-600 transition-colors">Inicio</a>
               <a href="servicios" className="text-gray-600 hover:text-cyan-600 transition-colors">Servicios</a>
-              <a href="soluciones" className="text-gray-600 hover:text-cyan-600 transition-colors">Soluciones</a>
+              <a href="contacto" className="text-gray-600 hover:text-cyan-600 transition-colors">Contacto</a>
             </div>
 
             <div className="hidden md:flex items-center gap-3">
