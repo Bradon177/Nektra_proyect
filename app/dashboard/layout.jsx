@@ -1,8 +1,10 @@
 "use client";
 import React, { useState } from "react";
+import Footer from "./Footer";
 
 export default function Layout({ children }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
 
   return (
     <>
@@ -67,7 +69,9 @@ export default function Layout({ children }) {
         </nav>
       </header>
 
-      <main>{children}</main>
+      <main>{children}
+        <Footer/>
+      </main>
     </>
   );
 }

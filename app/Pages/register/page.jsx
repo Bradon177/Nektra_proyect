@@ -1,22 +1,25 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
+
 
 
 
 export default function Page() {
 
-    const router = useRouter();
+  const router = useRouter();
 
-    const handleClick = () =>{
-      router.push("/Pages/login")
-    }
+  const handleClick = () => {
+    router.push("/Pages/login")
+  }
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [identificacion, setIdentificacion] = useState("");
   const [fechaNacimiento, setFechaNacimiento] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [show, setShow] = useState(false)
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
@@ -71,24 +74,44 @@ export default function Page() {
 
         <div className="space-y-2">
           <label className="text-gray-700 font-medium">Contraseña</label>
-          <input
-            type="password"
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full h-11 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:outline-none placeholder-gray-400 text-black"
-          />
+          <div className="relative">
+            <input
+              type={show ? "text" : "password"}
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full h-11 px-3 pr-12 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:outline-none placeholder-gray-400 text-black"
+            />
+
+            <button
+              type="button"
+              onClick={() => setShow(!show)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-black"
+            >
+              {show ? <Eye size={22} /> : <EyeOff size={22} />}
+            </button>
+          </div>
         </div>
 
         <div className="space-y-2">
           <label className="text-gray-700 font-medium">Confirmar contraseña</label>
-          <input
-            type="password"
-            placeholder="••••••••"
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
-            className="w-full h-11 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:outline-none placeholder-gray-400 text-black"
-          />
+          <div className="relative">
+            <input
+              type={show ? "text" : "password"}
+              placeholder="••••••••"
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              className="w-full h-11 px-3 pr-12 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:outline-none placeholder-gray-400 text-black"
+            />
+
+            <button
+              type="button"
+              onClick={() => setShow(!show)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-black"
+            >
+              {show ? <Eye size={22} /> : <EyeOff size={22} />}
+            </button>
+          </div>
         </div>
 
         <button
