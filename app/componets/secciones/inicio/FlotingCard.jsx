@@ -10,8 +10,7 @@ export default function FlotingCarg() {
           </svg>
         </div>
         <div>
-          <p className="text-2xl">+10,000</p>
-          <p className="text-sm text-gray-600">Clientes Satisfechos</p>
+          <p className="text-2xl">Clientes Satisfechos</p>
         </div>
       </div>
     </div>
