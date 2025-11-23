@@ -13,10 +13,6 @@ pnpm dev
 # or
 bun dev
 
-constrseña backend:
-97gLtOtHB1WANdpu
-
-mongo-uri : MONGO_URI=mongodb+srv://torradobrandon52_db_user:97gLtOtHB1WANdpu@nektra.p4rk6c7.mongodb.net/?appName=Nektra
 
 ```
 
