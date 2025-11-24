@@ -13,6 +13,8 @@ export default function page() {
         setFondo(!fondo)
     }
 
+
+
     const incrementar = () =>{
         setValor(valor+1);
     }
@@ -50,7 +52,7 @@ export default function page() {
                     {visible ? 'ocultar' : 'mostrar'}
                 </button>
 
-                <p className='text-2xl font-bold text-gray-800'>
+                <p className={fondo ? 'text-gray-800' : 'text-white'}>
                     {visible ? 'visible' : ''}
                 </p>
             </div>
