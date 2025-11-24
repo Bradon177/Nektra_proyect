@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
+import { registerUser } from "../../lib/service/authService";
 
 
 
@@ -9,10 +10,6 @@ import { Eye, EyeOff } from "lucide-react";
 export default function Page() {
 
   const router = useRouter();
-
-  const handleClick = () => {
-    router.push("/Pages/login")
-  }
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [identificacion, setIdentificacion] = useState("");
@@ -21,9 +18,38 @@ export default function Page() {
   const [confirm, setConfirm] = useState("");
   const [show, setShow] = useState(false)
 
+  const handleClick = () => {
+    router.push("/Pages/login")
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (password !== confirm) {
+      alert("Las contraseñas no coinciden");
+      return;
+    }
+    try {
+      const data = {
+        nombre: name,
+        email,
+        identificacion,
+        fechaNacimiento,
+        password,
+      };
+      const response = await registerUser(data);
+      console.log("Registro exitoso:", response);
+      router.push("/Pages/login");
+    } catch (error) {
+      console.error("Error en el registro:", error);
+      alert("Error en el registro. Por favor, intenta de nuevo.");
+    }
+  };
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
-      <form className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 space-y-6">
+      <form
+        onSubmit={handleSubmit}
+       className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 space-y-6">
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-semibold text-gray-900">Crear cuenta</h2>
           <p className="text-gray-600">Completa tus datos para registrarte</p>
