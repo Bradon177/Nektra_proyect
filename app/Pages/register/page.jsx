@@ -17,6 +17,8 @@ export default function Page() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [show, setShow] = useState(false)
+  const [messageCorrect, setMessageCorrect] = useState("");
+  const [messageAlert, setMessageAlert] = useState("");
 
   const handleClick = () => {
     router.push("/Pages/login")
@@ -25,7 +27,7 @@ export default function Page() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirm) {
-      alert("Las contraseñas no coinciden");
+      setMessageAlert("Las contraseñas no coinciden");
       return;
     }
     try {
@@ -38,11 +40,13 @@ export default function Page() {
       };
       const response = await registerUser(data);
       console.log("Registro exitoso:", response);
+      setMessageCorrect("Registro exitoso.");
       router.push("/Pages/login");
+      
     } catch (error) {
       console.error("Error en el registro:", error);
       const message = error?.message || error?.data?.error || "Error en el registro. Por favor, intenta de nuevo.";
-      alert(message);
+      setMessageAlert(message);
     }
   };
   
@@ -51,6 +55,16 @@ export default function Page() {
       <form
         onSubmit={handleSubmit}
        className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 space-y-6">
+        {messageCorrect && (
+          <div className="bg-green-500 text-white p-2 rounded-md text-center">
+            {messageCorrect}
+          </div>
+        )}
+        {messageAlert && (
+          <div className="bg-red-500 text-white p-2 rounded-md text-center">
+            {messageAlert}
+          </div>
+        )}
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-semibold text-gray-900">Crear cuenta</h2>
           <p className="text-gray-600">Completa tus datos para registrarte</p>

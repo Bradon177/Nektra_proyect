@@ -1,21 +1,80 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
+import { loginUser } from "../../lib/service/authService";
+import { setAuthToken } from "../../lib/axios";
 
 export default function Page() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false)
+  const [messageAlert, setMessageAlert] = useState("");
+  const [messageCorrect, setMessageCorrect] = useState("");
+  const [loading, setLoading] = useState(false);
+// Manejo de mensajes de error y éxito
+  useEffect(() => {
+    if (messageCorrect) {
+      setTimeout(() => {
+        setMessageCorrect("");
+      }, 3000);
+    }
+  }, [messageCorrect]);
+
+  useEffect(() => {
+    if (messageAlert) {
+      setTimeout(() => {
+        setMessageAlert("");
+      }, 3000);
+    }
+  }, [messageAlert]);
+  
+
+// Manejo del envío del formulario
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      setMessageAlert("Por favor, ingresa tu correo electrónico y contraseña");
+      return;
+    }
+    try {
+      const data = {
+        email,
+        password,
+      };
+      const response = await loginUser(data);
+      if (response?.token) {
+        setAuthToken(response.token);
+        try {
+          localStorage.setItem("user", JSON.stringify(response.user));
+        } catch (e) {}
+      }
+      setMessageCorrect(response?.message || "Inicio de sesión exitoso");
+      router.replace("/dashboard/inicio");
+    } catch (error) {
+      setMessageAlert(error?.message || "Error en el inicio de sesión. Por favor, verifica tus credenciales.");
+    }
+  };
 
 
   const handleGoogle = () => { };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
-      <form className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 space-y-6">
-
+      <form 
+      onSubmit={handleSubmit}
+      className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 space-y-6">
+        {messageAlert && (
+          <div className="bg-red-500 text-white p-2 rounded-md text-center">
+            {messageAlert}
+          </div>
+        )}
+        {messageCorrect && (
+          <div className="bg-green-500 text-white p-2 rounded-md text-center">
+            {messageCorrect}
+          </div>
+        )}
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-semibold text-gray-900">Iniciar sesión</h2>
           <p className="text-gray-600">Ingresa tus datos para continuar</p>
@@ -55,10 +114,6 @@ export default function Page() {
         </div>
 
         <button type="submit"
-          onClick={(e) => {
-            e.preventDefault(); // Evita recargar la página
-            router.replace("/dashboard/inicio");
-          }}
           className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-md transition">
           Entrar
         </button>

@@ -1,12 +1,35 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "./Footer";
 import { useRouter } from "next/navigation";
+import { logoutUser } from "../lib/service/authService";
+import { setAuthToken } from "../lib/axios";
 
 
 export default function Layout({ children }) {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  // Manejo de autenticación
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      setUser(user);
+    }
+  }, []);
+// Manejo de cierre de sesión
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+    } catch (e) {
+    } finally {
+      try { localStorage.removeItem("user"); } catch {}
+      setAuthToken(null);
+      setUser(null);
+      router.replace("/Pages/login");
+    }
+  };
+
 
 
   return (
@@ -28,13 +51,21 @@ export default function Layout({ children }) {
             </div>
 
             <div className="hidden md:flex items-center gap-3">
-              <button
-              onClick={()=>router.replace("/Pages/login")} 
-              className="px-4 py-2 text-gray-600 border rounded-lg hover:bg-gray-100 transition">
-                Iniciar Sesión
-              </button>
-
-           
+              {user ? (
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 text-gray-600 border rounded-lg hover:bg-gray-100 transition"
+                >
+                  Cerrar Sesión
+                </button>
+              ) : (
+                <button
+                  onClick={() => router.replace("/Pages/login")}
+                  className="px-4 py-2 text-gray-600 border rounded-lg hover:bg-gray-100 transition"
+                >
+                  Iniciar Sesión
+                </button>
+              )}
             </div>
 
             <button
@@ -63,11 +94,19 @@ export default function Layout({ children }) {
                 <a href="#nosotros" className="text-gray-600 hover:text-cyan-600 transition-colors">Nosotros</a>
                 <a href="#contacto" className="text-gray-600 hover:text-cyan-600 transition-colors">Contacto</a>
 
-                <button
-                 onClick={()=>router.replace("/Pages/login")} 
-                className="w-full px-4 py-2 border rounded-lg hover:bg-gray-50 transition">
-                  Iniciar Sesión
-                </button>
+                {user ? (
+                  <button
+                    onClick={handleLogout}
+                    className="w-full px-4 py-2 border rounded-lg hover:bg-gray-50 transition">
+                    Cerrar Sesión
+                  </button>
+                ) : (
+                  <button
+                    onClick={()=>router.replace("/Pages/login")}
+                    className="w-full px-4 py-2 border rounded-lg hover:bg-gray-50 transition">
+                    Iniciar Sesión
+                  </button>
+                )}
 
               
               </div>
