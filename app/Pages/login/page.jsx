@@ -29,6 +29,14 @@ export default function Page() {
       }, 3000);
     }
   }, [messageAlert]);
+  useEffect(() => {
+    try {
+      const u = JSON.parse(localStorage.getItem("user"));
+      if (u) {
+        router.replace("/dashboard/inicio");
+      }
+    } catch {}
+  }, [router]);
   
 
 // Manejo del envío del formulario
