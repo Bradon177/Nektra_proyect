@@ -1,6 +1,7 @@
 "use client";
 import { getUsers, deleteUser, updateUser } from '../../../lib/service/userService';
 import Button from '../../ui/Button';
+import Modal from '../../ui/Modal';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
@@ -23,6 +24,9 @@ export default function Table() {
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({ nombre: '', email: '', identificacion: '', fechaNacimiento: '', rol: 'user' });
   const [filters, setFilters] = useState({ nombre: '', email: '', identificacion: '' });
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
+  const [confirm, setConfirm] = useState({ open: false, userId: null, name: '' });
 
   const loadUsers = async (f) => {
     setLoading(true);
@@ -44,6 +48,8 @@ export default function Table() {
       identificacion: searchParams.get('identificacion') || ''
     };
     setFilters(initial);
+    const p = Number(searchParams.get('page') || 1);
+    setPage(Number.isFinite(p) && p > 0 ? p : 1);
     loadUsers(initial);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
@@ -53,14 +59,18 @@ export default function Table() {
     if (filters.nombre) params.set('nombre', filters.nombre);
     if (filters.email) params.set('email', filters.email);
     if (filters.identificacion) params.set('identificacion', filters.identificacion);
+    // al aplicar filtros, ir a la página 1
+    params.set('page', '1');
     const qs = params.toString();
-    router.replace(qs ? `${pathname}?${qs}` : pathname);
+    router.replace(`${pathname}?${qs}`);
+    setPage(1);
     await loadUsers(filters);
   };
 
   const clearFilters = async () => {
     setFilters({ nombre: '', email: '', identificacion: '' });
     router.replace(pathname);
+    setPage(1);
     await loadUsers({});
   };
 
@@ -90,28 +100,36 @@ export default function Table() {
       const updated = res?.user;
       setUsers((prev) => prev.map((u) => (u._id === editingId ? { ...u, ...updated } : u)));
       cancelEdit();
+      await loadUsers(filters);
     } catch (e) {
       setError(e?.message || 'Error al actualizar usuario');
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = (u) => {
+    setConfirm({ open: true, userId: u._id, name: u.nombre || '' });
+  };
+
+  const confirmDelete = async () => {
     try {
-      await deleteUser(id);
-      setUsers((prev) => prev.filter((u) => u._id !== id));
+      await deleteUser(confirm.userId);
+      setConfirm({ open: false, userId: null, name: '' });
+      await loadUsers(filters);
     } catch (e) {
       setError(e?.message || 'Error al eliminar usuario');
     }
   };
 
+  const cancelDelete = () => setConfirm({ open: false, userId: null, name: '' });
+
   return (
+    <>
     <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold">Usuarios</h2>
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={applyFilters}>Aplicar filtros</Button>
           <Button variant="ghost" onClick={clearFilters}>Borrar filtros</Button>
-          <Button variant="outline" onClick={() => loadUsers(filters)}>Recargar</Button>
         </div>
       </div>
 
@@ -156,8 +174,10 @@ export default function Table() {
           <tbody className="bg-white divide-y divide-gray-200">
             {loading ? (
               <tr><td className="px-4 py-3" colSpan={7}>Cargando...</td></tr>
+            ) : users.length === 0 ? (
+              <tr><td className="px-4 py-6 text-center text-gray-600" colSpan={7}>No hay usuarios registrados</td></tr>
             ) : (
-              users.map((u) => (
+              users.slice((page - 1) * pageSize, page * pageSize).map((u) => (
                 <tr key={u._id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 text-gray-700">{u._id}</td>
                   <td className="px-4 py-3">
@@ -207,7 +227,7 @@ export default function Table() {
                     ) : (
                       <>
                         <Button variant="outline" size="sm" className="border border-cyan-600 text-cyan-600" onClick={() => startEdit(u)}>Editar</Button>
-                        <Button variant="destructive" size="sm" className="border border-red-600 text-red-600" onClick={() => handleDelete(u._id)}>Eliminar</Button>
+                        <Button variant="destructive" size="sm" className="border border-red-600 text-red-600" onClick={() => handleDelete(u)}>Eliminar</Button>
                       </>
                     )}
                   </td>
@@ -217,6 +237,39 @@ export default function Table() {
           </tbody>
         </table>
       </div>
-    </div>
+
+      {users.length > 0 && (
+        <div className="mt-4 flex items-center justify-between">
+          <div className="text-sm text-gray-600">Página {page} de {Math.max(1, Math.ceil(users.length / pageSize))}</div>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => {
+              const next = Math.max(1, page - 1);
+              setPage(next);
+              const params = new URLSearchParams(window.location.search);
+              params.set('page', String(next));
+              router.replace(`${pathname}?${params.toString()}`);
+            }} disabled={page <= 1}>Anterior</Button>
+            <Button variant="outline" size="sm" onClick={() => {
+              const total = Math.ceil(users.length / pageSize);
+              const next = Math.min(total, page + 1);
+              setPage(next);
+              const params = new URLSearchParams(window.location.search);
+              params.set('page', String(next));
+              router.replace(`${pathname}?${params.toString()}`);
+            }} disabled={page >= Math.ceil(users.length / pageSize)}>Siguiente</Button>
+          </div>
+        </div>
+      )}
+  </div>
+  <Modal
+    open={confirm.open}
+    title="Confirmar eliminación"
+    description={`¿Estás seguro de eliminar a "${confirm.name}"? Esta acción no se puede deshacer.`}
+    confirmText="Eliminar"
+    cancelText="Cancelar"
+    onConfirm={confirmDelete}
+    onCancel={cancelDelete}
+  />
+  </>
   );
 }
