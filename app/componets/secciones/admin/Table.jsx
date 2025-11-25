@@ -1,5 +1,7 @@
+"use client";
 import { getUsers, deleteUser, updateUser } from '../../../lib/service/userService';
 import Button from '../../ui/Button';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 function formatDate(d) {
@@ -12,17 +14,21 @@ function formatDate(d) {
 }
 
 export default function Table() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({ nombre: '', email: '', identificacion: '', fechaNacimiento: '', rol: 'user' });
+  const [filters, setFilters] = useState({ nombre: '', email: '', identificacion: '' });
 
-  const loadUsers = async () => {
+  const loadUsers = async (f) => {
     setLoading(true);
     setError('');
     try {
-      const data = await getUsers();
+      const data = await getUsers(f);
       setUsers(Array.isArray(data) ? data : []);
     } catch (e) {
       setError(e?.message || 'Error al cargar usuarios');
@@ -32,8 +38,31 @@ export default function Table() {
   };
 
   useEffect(() => {
-    loadUsers();
-  }, []);
+    const initial = {
+      nombre: searchParams.get('nombre') || '',
+      email: searchParams.get('email') || '',
+      identificacion: searchParams.get('identificacion') || ''
+    };
+    setFilters(initial);
+    loadUsers(initial);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
+  const applyFilters = async () => {
+    const params = new URLSearchParams();
+    if (filters.nombre) params.set('nombre', filters.nombre);
+    if (filters.email) params.set('email', filters.email);
+    if (filters.identificacion) params.set('identificacion', filters.identificacion);
+    const qs = params.toString();
+    router.replace(qs ? `${pathname}?${qs}` : pathname);
+    await loadUsers(filters);
+  };
+
+  const clearFilters = async () => {
+    setFilters({ nombre: '', email: '', identificacion: '' });
+    router.replace(pathname);
+    await loadUsers({});
+  };
 
   const startEdit = (u) => {
     setEditingId(u._id);
@@ -77,9 +106,34 @@ export default function Table() {
 
   return (
     <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold">Usuarios</h2>
-        <Button variant="outline" onClick={loadUsers}>Recargar</Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={applyFilters}>Aplicar filtros</Button>
+          <Button variant="ghost" onClick={clearFilters}>Borrar filtros</Button>
+          <Button variant="outline" onClick={() => loadUsers(filters)}>Recargar</Button>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-3 mb-4">
+        <input
+          className="border rounded-md px-3 py-2"
+          placeholder="Filtrar por nombre"
+          value={filters.nombre}
+          onChange={(e) => setFilters({ ...filters, nombre: e.target.value })}
+        />
+        <input
+          className="border rounded-md px-3 py-2"
+          placeholder="Filtrar por email"
+          value={filters.email}
+          onChange={(e) => setFilters({ ...filters, email: e.target.value })}
+        />
+        <input
+          className="border rounded-md px-3 py-2"
+          placeholder="Filtrar por identificación"
+          value={filters.identificacion}
+          onChange={(e) => setFilters({ ...filters, identificacion: e.target.value })}
+        />
       </div>
 
       {error && (
@@ -152,8 +206,8 @@ export default function Table() {
                       </>
                     ) : (
                       <>
-                        <Button variant="outline" size="sm border border-cyan-600 text-cyan-600" onClick={() => startEdit(u)}>Editar</Button>
-                        <Button variant="destructive" size="sm border border-red-600 text-red-600" onClick={() => handleDelete(u._id)}>Eliminar</Button>
+                        <Button variant="outline" size="sm" className="border border-cyan-600 text-cyan-600" onClick={() => startEdit(u)}>Editar</Button>
+                        <Button variant="destructive" size="sm" className="border border-red-600 text-red-600" onClick={() => handleDelete(u._id)}>Eliminar</Button>
                       </>
                     )}
                   </td>

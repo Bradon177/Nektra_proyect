@@ -1,8 +1,18 @@
 import api from "../axios";
 
-export async function getUsers() {
+export async function getUsers(filters) {
     try {
-        const res = await api.get("/admin/users");
+        let qs = "";
+        if (filters && typeof filters === "object") {
+            const params = new URLSearchParams();
+            if (filters.query) params.set("query", filters.query);
+            if (filters.nombre) params.set("nombre", filters.nombre);
+            if (filters.email) params.set("email", filters.email);
+            if (filters.identificacion) params.set("identificacion", filters.identificacion);
+            const str = params.toString();
+            if (str) qs = `?${str}`;
+        }
+        const res = await api.get(`/admin/users${qs}`);
         return res?.users || [];
     } catch (err) {
         console.error(err);

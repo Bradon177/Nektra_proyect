@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import Table from "../../componets/secciones/admin/Table";
 
@@ -38,7 +38,9 @@ export default function Page() {
       <div className="max-w-7xl mx-auto px-6 space-y-6">
         <h1 className="text-4xl font-bold">Panel de Administración</h1>
         <p className="text-gray-600">Gestión de usuarios</p>
-        <Table />
+        <Suspense fallback={<div>Cargando...</div>}>
+          <Table />
+        </Suspense>
       </div>
     </section>
   );

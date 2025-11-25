@@ -31,7 +31,30 @@ export async function GET(req) {
   try {
     await connectDB();
     await verifyAdmin(req);
-    const users = await Users.find()
+    const url = new URL(req.url);
+    const query = url.searchParams.get("query");
+    const nombre = url.searchParams.get("nombre");
+    const email = url.searchParams.get("email");
+    const identificacion = url.searchParams.get("identificacion");
+
+    let filter = {};
+    if (query) {
+      filter = {
+        $or: [
+          { nombre: { $regex: query, $options: "i" } },
+          { email: { $regex: query, $options: "i" } },
+          { identificacion: { $regex: query, $options: "i" } },
+        ],
+      };
+    } else {
+      const and = [];
+      if (nombre) and.push({ nombre: { $regex: nombre, $options: "i" } });
+      if (email) and.push({ email: { $regex: email, $options: "i" } });
+      if (identificacion) and.push({ identificacion: { $regex: identificacion, $options: "i" } });
+      if (and.length) filter = { $and: and };
+    }
+
+    const users = await Users.find(filter)
       .select("nombre email identificacion fechaNacimiento rol createdAt updatedAt")
       .lean();
     return new Response(JSON.stringify({ users }), { status: 200, headers: { "Content-Type": "application/json" } });
