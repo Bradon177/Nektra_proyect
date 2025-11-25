@@ -88,11 +88,9 @@ export default function Layout({ children }) {
           {isMenuOpen && (
             <div className="md:hidden mt-4 pb-4 border-t pt-4">
               <div className="flex flex-col gap-4">
-                <a href="#inicio" className="text-gray-600 hover:text-cyan-600 transition-colors">Inicio</a>
-                <a href="#servicios" className="text-gray-600 hover:text-cyan-600 transition-colors">Servicios</a>
-                <a href="#soluciones" className="text-gray-600 hover:text-cyan-600 transition-colors">Soluciones</a>
-                <a href="#nosotros" className="text-gray-600 hover:text-cyan-600 transition-colors">Nosotros</a>
-                <a href="#contacto" className="text-gray-600 hover:text-cyan-600 transition-colors">Contacto</a>
+                <a onClick={()=>router.replace("inicio")} className="text-gray-600 hover:text-cyan-600 transition-colors">Inicio</a>
+                <a onClick={()=>router.replace("servicios")} className="text-gray-600 hover:text-cyan-600 transition-colors">Servicios</a>
+                <a onClick={()=>router.replace("contacto")} className="text-gray-600 hover:text-cyan-600 transition-colors">Contacto</a>
 
                 {user ? (
                   <button
