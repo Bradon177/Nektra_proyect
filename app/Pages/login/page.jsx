@@ -80,31 +80,24 @@ export default function Page() {
   };
 
 
-  const handleGoogle = () => {
+  const handleGoogle = async () => {
+    if (loading) return;
+    setLoading(true);
     try {
       const hasFirebase = Boolean(process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
       if (hasFirebase && auth && googleProvider) {
-        signInWithPopup(auth, googleProvider)
-          .then(async (result) => {
-            const user = result.user;
-            const idToken = await user.getIdToken();
-            try {
-              const res = await loginWithGoogle(idToken);
-              if (res?.token) {
-                setAuthToken(res.token);
-                try { localStorage.setItem("user", JSON.stringify(res.user)); } catch {}
-                setMessageCorrect(res?.message || "Inicio de sesión exitoso");
-                router.replace("/dashboard/inicio");
-              } else {
-                setMessageAlert("No se pudo iniciar sesión con Google");
-              }
-            } catch (e) {
-              setMessageAlert(e?.message || "Error al iniciar con Google");
-            }
-          })
-          .catch(() => {
-            setMessageAlert("No se pudo autenticar con Firebase");
-          });
+        const result = await signInWithPopup(auth, googleProvider);
+        const user = result.user;
+        const idToken = await user.getIdToken();
+        const res = await loginWithGoogle(idToken);
+        if (res?.token) {
+          setAuthToken(res.token);
+          try { localStorage.setItem("user", JSON.stringify(res.user)); } catch {}
+          setMessageCorrect(res?.message || "Inicio de sesión exitoso");
+          router.replace("/dashboard/inicio");
+        } else {
+          setMessageAlert("No se pudo iniciar sesión con Google");
+        }
         return;
       }
       if (!googleReady || !window.google) {
@@ -124,6 +117,7 @@ export default function Page() {
           const idToken = response?.credential;
           if (!idToken) {
             setMessageAlert("No se obtuvo el token de Google");
+            setLoading(false);
             return;
           }
           try {
@@ -138,12 +132,18 @@ export default function Page() {
             }
           } catch (e) {
             setMessageAlert(e?.message || "Error al iniciar con Google");
+          } finally {
+            setLoading(false);
           }
         },
       });
       window.google.accounts.id.prompt();
     } catch (e) {
-      setMessageAlert("Error al inicializar Google");
+      setMessageAlert("No se pudo autenticar con Firebase");
+    } finally {
+      if (!(window.google && window.google.accounts && window.google.accounts.id)) {
+        setLoading(false);
+      }
     }
   };
 

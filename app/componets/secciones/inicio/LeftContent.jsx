@@ -24,7 +24,7 @@ export default function LeftContent() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <Button onClick={() => router.push('/dashboard/servicios')} size="lg" className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-lg">
-                    Comenzar Gratis
+                    Comienza a revisar
                     <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
             </div>

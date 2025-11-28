@@ -1,12 +1,20 @@
 "use client"
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { auth } from '../../lib/firebase';
 import { confirmPasswordReset, verifyPasswordResetCode } from 'firebase/auth';
 import { resetPasswordWithToken, resetPasswordWithEmail } from '../../lib/service/authService';
 
-export default function page() {
+export default function Page() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center p-4">Cargando…</div>}>
+      <ResetPageContent />
+    </Suspense>
+  );
+}
+
+function ResetPageContent() {
     const router = useRouter();
     const params = useSearchParams();
     const [password, setPassword] = useState("");

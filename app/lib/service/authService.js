@@ -56,3 +56,29 @@ export async function loginWithGoogle(idToken) {
         throw wrapped;
     }
 }
+
+export async function resetPasswordWithEmail(email, password) {
+    try {
+        const response = await api.post("/auth/reset-password", { email, password });
+        return response;
+    } catch (error) {
+        const message = error?.message || error?.data?.error || "Error al restablecer contraseña";
+        const wrapped = new Error(message);
+        if (error?.status) wrapped.status = error.status;
+        wrapped.data = error?.data;
+        throw wrapped;
+    }
+}
+
+export async function resetPasswordWithToken(token, password) {
+    try {
+        const response = await api.post("/auth/reset-password", { token, password });
+        return response;
+    } catch (error) {
+        const message = error?.message || error?.data?.error || "Error al restablecer contraseña";
+        const wrapped = new Error(message);
+        if (error?.status) wrapped.status = error.status;
+        wrapped.data = error?.data;
+        throw wrapped;
+    }
+}
