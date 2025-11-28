@@ -42,12 +42,7 @@ export default function Page() {
           return;
         }
       } catch {}
-      const code = err?.code || "";
-      if (code === "auth/user-not-found") {
-        setMessageAlert("Este correo no está registrado en Firebase");
-      } else {
-        setMessageAlert(err?.message || "No se pudo enviar el correo");
-      }
+      setMessageAlert(err?.message || "No se pudo enviar el correo");
     }
   };
 

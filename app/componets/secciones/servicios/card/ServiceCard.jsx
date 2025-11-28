@@ -2,10 +2,12 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
 import Button from "../../../ui/Button";
+import { useRouter } from "next/navigation";
 
-export default function ServiceCard({ icon: Icon, title, description, features }) {
+export default function ServiceCard({ icon: Icon, title, description, features, price }) {
+  const router = useRouter();
   return (
-    <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:border-cyan-500 hover:shadow-xl transition-all group">
+    <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:border-cyan-500 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.01] group">
       
       {/* Icon */}
       <div className="w-14 h-14 bg-gradient-to-r from-cyan-100 to-blue-100 rounded-xl flex items-center justify-center mb-6 group-hover:from-cyan-500 group-hover:to-blue-600 transition-all">
@@ -13,7 +15,10 @@ export default function ServiceCard({ icon: Icon, title, description, features }
       </div>
 
       {/* Title */}
-      <h3 className="text-2xl mb-3">{title}</h3>
+      <h3 className="text-2xl mb-1">{title}</h3>
+      {price && (
+        <div className="mb-4 text-cyan-700 font-semibold">{price}</div>
+      )}
 
       {/* Description */}
       <p className="text-gray-600 mb-6">{description}</p>
@@ -35,7 +40,7 @@ export default function ServiceCard({ icon: Icon, title, description, features }
       </ul>
 
       {/* Button */}
-      <Button variant="outline" className="w-full border-cyan-500 text-cyan-600 hover:bg-cyan-50">
+      <Button onClick={() => router.push('/dashboard/contacto')} variant="outline" className="w-full border-cyan-500 text-cyan-600 hover:bg-cyan-50">
         Más Detalles
         <ArrowRight className="ml-2 w-4 h-4" />
       </Button>

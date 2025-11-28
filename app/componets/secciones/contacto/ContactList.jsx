@@ -7,8 +7,8 @@ export default function ContactList() {
     {
       icon: Mail,
       title: "Email",
-      info: "info@tuempresa.com",
-      link: "mailto:info@tuempresa.com",
+      info: "trillosbrandon262@gmail.com",
+      link: "mailto:trillosbrandon262@gmail.com",
       color: "bg-gradient-to-r from-cyan-100 to-blue-100"
     },
     {
@@ -21,8 +21,8 @@ export default function ContactList() {
     {
       icon: MessageCircle,
       title: "WhatsApp",
-      info: "+1 234 567 890",
-      link: "https://wa.me/1234567890",
+      info: "+57 3135993791",
+      link: "https://wa.me/573135993791",
       color: "bg-green-500"
     }
   ];

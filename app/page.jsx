@@ -1,18 +1,5 @@
-"use client";
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.push("/dashboard/inicio");
-  }, [router]);
-
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
-      hola
-    </div>
-  );
+  redirect("/dashboard/inicio");
 }

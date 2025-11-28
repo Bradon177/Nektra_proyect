@@ -2,7 +2,7 @@ import React from "react";
 
 export default function ContactCard({ icon: Icon, title, info, link, color }) {
   return (
-    <div className="bg-white p-6 rounded-xl border border-gray-200 hover:border-cyan-500 hover:shadow-lg transition-all text-center">
+    <div className="bg-white p-6 rounded-xl border border-gray-200 hover:border-cyan-500 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.01] text-center">
       <div
         className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 ${color}`}
       >

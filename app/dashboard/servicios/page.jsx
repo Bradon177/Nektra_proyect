@@ -10,18 +10,21 @@ export default function page() {
       title: "Desarrollo Web",
       description: "Creamos aplicaciones web modernas, rápidas y escalables utilizando las últimas tecnologías.",
       features: ["React & Next.js", "APIs RESTful", "Progressive Web Apps", "Optimización SEO"],
+      price: "Desde $1.200"
     },
     {
       icon: Smartphone,
       title: "Aplicaciones Móviles",
       description: "Desarrollamos apps nativas y multiplataforma para iOS y Android.",
       features: ["Flutter", "React Native", "UI/UX", "Integración de APIs"],
+      price: "Desde $1.800"
     },
     {
       icon: Cloud,
       title: "Soluciones Cloud",
       description: "Infraestructura cloud escalable y segura para tu negocio.",
       features: ["AWS & Azure", "CI/CD", "Microservicios", "Auto-scaling"],
+      price: "Desde $900"
     },
   
 

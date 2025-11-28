@@ -8,8 +8,8 @@ export async function POST(req) {
     await connectDB();
     const body = await req.json();
     const password = String(body?.password || "");
-    const token = body?.token;
-    const emailBody = body?.email;
+    const token = typeof body?.token === "string" ? body.token : null;
+    const emailBody = typeof body?.email === "string" ? body.email : null;
     if (!password || password.length < 6) {
       return new Response(JSON.stringify({ error: "Contraseña inválida" }), { status: 400 });
     }
@@ -25,7 +25,10 @@ export async function POST(req) {
         return new Response(JSON.stringify({ error: "Token inválido o expirado" }), { status: 400 });
       }
     } else if (emailBody) {
-      email = String(emailBody).trim().toLowerCase();
+      email = String(emailBody).trim().toLowerCase().replace(/[\r\n\t]/g, "");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+        return new Response(JSON.stringify({ error: "Email inválido" }), { status: 400 });
+      }
     }
     if (!email) {
       return new Response(JSON.stringify({ error: "Email requerido" }), { status: 400 });

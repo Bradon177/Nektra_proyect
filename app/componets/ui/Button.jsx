@@ -28,7 +28,7 @@ export default function Button({
 
   return (
     <button
-      className={`inline-flex items-center justify-center rounded-md font-medium transition ${variantClass} ${sizeClass} ${className}`}
+      className={`inline-flex items-center justify-center rounded-md font-medium transition-transform duration-300 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 ${variantClass} ${sizeClass} ${className}`}
       {...props}
     >
       {children}
